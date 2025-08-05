@@ -73,7 +73,7 @@ public class User {
     private String email;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = true, updatable = false) //TODO: Change this nullable to false if you want to enforce creation timestamp
     private LocalDateTime createdDateTime;
 
     @Column(nullable = true) // lastAccessedDateTime can be null initially

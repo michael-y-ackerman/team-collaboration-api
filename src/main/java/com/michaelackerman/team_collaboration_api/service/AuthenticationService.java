@@ -18,6 +18,7 @@ public class AuthenticationService {
     public User registerUser(User user) {
         // Hash the password before saving
         String hashedPassword = hashPassword(user.getPassword());
+        System.out.println("User: " + user);
         return userService.createUser(user.getUsername(), hashedPassword, user.getEmail(), user.getFirstName(), user.getLastName());
     }
 
