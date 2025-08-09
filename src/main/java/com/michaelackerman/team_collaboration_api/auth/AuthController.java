@@ -1,6 +1,7 @@
 package com.michaelackerman.team_collaboration_api.auth;
 
-import com.michaelackerman.team_collaboration_api.auth.dto.UserRegistrationDTO;
+import com.michaelackerman.team_collaboration_api.auth.dto.RegisterRequestDTO;
+import com.michaelackerman.team_collaboration_api.auth.dto.LoginRequestDTO;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@Valid @RequestBody UserRegistrationDTO newUser) {
-        return authService.registerUser(newUser);
+    public User registerUser(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
+        return authService.registerUser(registerRequestDTO);
+    }
+
+    @PostMapping("/login")
+    public User loginUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+        return authService.loginUser(loginRequestDTO);
     }
 }

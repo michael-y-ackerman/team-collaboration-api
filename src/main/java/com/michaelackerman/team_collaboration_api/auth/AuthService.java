@@ -1,6 +1,7 @@
 package com.michaelackerman.team_collaboration_api.auth;
 
-import com.michaelackerman.team_collaboration_api.auth.dto.UserRegistrationDTO;
+import com.michaelackerman.team_collaboration_api.auth.dto.RegisterRequestDTO;
+import com.michaelackerman.team_collaboration_api.auth.dto.LoginRequestDTO;
 import com.michaelackerman.team_collaboration_api.exception.UserAlreadyExistsException;
 import com.michaelackerman.team_collaboration_api.user.User;
 import com.michaelackerman.team_collaboration_api.user.UserMapper;
@@ -16,14 +17,16 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    public User registerUser(UserRegistrationDTO userRegistrationDTO) {
-        User user = userMapper.fromRegistrationDTO(userRegistrationDTO);
-        validateUserUniqueness(user);
+    public User registerUser(RegisterRequestDTO registerRequestDTO) {
+        User newUser = userMapper.fromRegisterRequestDTO(registerRequestDTO);
+        validateUserUniqueness(newUser);
 
-        user.setPassword(hashPassword(userRegistrationDTO.getPassword()));
-        return userService.createUser(user);
+        newUser.setPassword(hashPassword(registerRequestDTO.getPassword()));
+        return userService.createUser(newUser);
     }
-    
+
+
+
     private void validateUserUniqueness(User user) {
         if (userService.findUserByEmail(user.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists.");
