@@ -1,16 +1,7 @@
-package com.michaelackerman.team_collaboration_api.entity;
+package com.michaelackerman.team_collaboration_api.user;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,19 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 
 /**
  * Represents a user entity for the team collaboration API.
  * This class maps to the "users" table in the database and includes
- * validation annotations. Password field should be hashed before storage.
+ * validation annotations. The password field should be hashed before storage.
  *
  * @author Michael Ackerman
  * @version 1.0
- *
- * TODO: This class currently serves as both a JPA Entity and a DTO.
- * For now it's fine, but it should be refactored into separate classes
- * to ensure a cleaner separation of concerns and improved security.
+ * <p>
  */
 @Entity
 @NoArgsConstructor
@@ -38,8 +29,8 @@ import lombok.ToString;
 @Data
 @ToString(exclude = "password")
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "email" }),
-        @UniqueConstraint(columnNames = { "username" })
+        @UniqueConstraint(columnNames = {"email"}),
+        @UniqueConstraint(columnNames = {"username"})
 })
 public class User {
     @Id
@@ -52,8 +43,9 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password is required.")
-    @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters.")
-    @Column(nullable = false, length = 100)
+    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters.")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Ensures that password never serializes to JSON
+    @Column(nullable = false)
     private String password;
 
     @NotBlank(message = "First name is required.")
@@ -73,10 +65,9 @@ public class User {
     private String email;
 
     @CreationTimestamp
-    @Column(nullable = true, updatable = false) //TODO: Change this nullable to false if you want to enforce creation timestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdDateTime;
 
-    @Column(nullable = true) // lastAccessedDateTime can be null initially
     private LocalDateTime lastAccessedDateTime;
 
     public User(String username, String password, String firstName, String lastName, String email) {
